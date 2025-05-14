@@ -22,6 +22,5 @@ build_and_push:
   before_script:
     - echo "$REGISTRY_PAT" | docker login -u "$REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
-    - docker build -t $IMAGE_NAME -t $LATEST_IMAGE .
+    - docker build -t $IMAGE_NAME .
     - docker push $IMAGE_NAME
-    - docker push $LATEST_IMAGE
