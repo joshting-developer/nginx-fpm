@@ -7,6 +7,7 @@ WORKDIR /var/www/html
 # 安裝必要套件與 PHP 擴充
 RUN apt update && \
     apt install -y \
+        cron \
         git \
         zip \
         curl \
@@ -39,13 +40,14 @@ RUN existing_uid=$(id -u www-data) && \
         usermod -u 1000 www-data; \
     fi
 
-# 建立 php-fpm 的 socket 路徑
-RUN mkdir -p /run/php && chown www-data:www-data /run/php
-
-# 建立 PHP log 目錄，避免 php-fpm 無法啟動
-RUN mkdir -p /var/log/php && \
-    touch /var/log/php/php-fpm.log && \
-    chown -R www-data:www-data /var/log/php
+RUN mkdir -p /var/log/php /var/log/supervisor /run/php /var/run/supervisor /var/www/html/storage/logs \
+    && touch /var/log/php-fpm.log /var/log/php-fpm.err.log \
+             /var/log/nginx.log /var/log/nginx.err.log \
+             /var/log/laravel-queue.log /var/log/laravel-queue.err.log \
+             /var/log/laravel-scheduler.log /var/log/laravel-scheduler.err.log \
+             /var/log/supervisord.log \
+    && chown -R www-data:www-data /var/log /run/php /var/run/supervisor /var/www/html/storage/logs
+   
 
 # 複製設定檔
 COPY dockerfiles/fpm/pool.d/www.conf /etc/php/8.3/fpm/pool.d/www.conf
@@ -53,6 +55,11 @@ COPY dockerfiles/fpm/php-fpm.conf /etc/php/8.3/fpm/php-fpm.conf
 COPY dockerfiles/supervisord.conf /etc/supervisor/supervisord.conf
 COPY dockerfiles/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY dockerfiles/nginx/nginx.conf /etc/nginx/nginx.conf
+
+# 複製排程進入 cron.d
+COPY dockerfiles/cron/laravel-scheduler /etc/cron.d/laravel-scheduler
+RUN chmod 0644 /etc/cron.d/laravel-scheduler
+
 
 EXPOSE 80
 
