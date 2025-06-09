@@ -27,6 +27,7 @@ RUN apt update && \
         php8.3-bcmath \
         php8.3-redis \
         php8.3-sqlite3 \
+        php8.3-intl\
         php-pear \
         unixodbc-dev
 
