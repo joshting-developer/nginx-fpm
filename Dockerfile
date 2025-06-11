@@ -35,12 +35,7 @@ RUN apt update && \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # 設定 www-data UID 為 1000，避免宿主機權限問題
-RUN existing_uid=$(id -u www-data) && \
-    if [ "$existing_uid" != "1000" ]; then \
-        existing_user=$(getent passwd 1000 | cut -d: -f1); \
-        [ -n "$existing_user" ] && usermod -u 2000 "$existing_user"; \
-        usermod -u 1000 www-data; \
-    fi
+RUN usermod -u 2001 www-data
 
 RUN mkdir -p /var/log/php /var/log/supervisor /run/php /var/run/supervisor /var/www/html/storage/logs \
     && touch /var/log/php/php-fpm.log /var/log/php/php-fpm.err.log \
