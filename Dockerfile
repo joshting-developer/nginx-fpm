@@ -19,6 +19,10 @@ RUN apt update && \
         git \
         zip \
         curl \
+        jpegoptim \
+        optipng \
+        pngquant \
+        gifsicle \
         supervisor \
         nginx \
         php8.4 \
