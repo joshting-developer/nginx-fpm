@@ -28,4 +28,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: joshting1999/nginx-fpm:${{ github.ref_name }}
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            joshting1999/nginx-fpm:${{ github.ref_name }}
+            joshting1999/nginx-fpm:latest
